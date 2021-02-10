@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "werknemers")
+@NamedEntityGraph(name = "Werknemer.metFiliaal",
+        attributeNodes = @NamedAttributeNode("filiaal"))
 public class Werknemer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

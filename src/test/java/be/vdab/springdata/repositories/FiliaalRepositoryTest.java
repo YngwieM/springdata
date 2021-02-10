@@ -82,12 +82,14 @@ class FiliaalRepositoryTest
                 () -> repository.deleteById(-1L));
     }
     @Test
-    void findByGemeente() {
-        var filialen = repository.findByGemeente("Brussel");
+    void findByGemeenteOrderByNaam() {
+        var filialen = repository.findByGemeenteOrderByNaam("Brussel");
         assertThat(filialen).hasSize(2)
-                .allSatisfy(filiaal ->
-                        assertThat(filiaal.getGemeente()).isEqualTo("Brussel"));
+                .allSatisfy(
+                        filiaal -> assertThat(filiaal.getGemeente()).isEqualTo("Brussel"))
+                .extracting(filiaal->filiaal.getNaam()).isSorted();
     }
+
     @Test
     void findByOmzetGreaterThanEqual() {
         var tweeduizend = BigDecimal.valueOf(2_000);
@@ -96,6 +98,19 @@ class FiliaalRepositoryTest
                 .allSatisfy(filiaal ->
                         assertThat(filiaal.getOmzet()).isGreaterThanOrEqualTo(tweeduizend));
     }
+    @Test
+    void countByGemeente() {
+        assertThat(repository.countByGemeente("Brussel")).isEqualTo(2);
+    }
+    @Test
+    void findGemiddeldeOmzet() {
+        assertThat(repository.findGemiddeldeOmzet()).isEqualByComparingTo("2000");
+    }
+    @Test
+    void findMetHoogsteOmzet() {
+        var filialen = repository.findMetHoogsteOmzet();
+        assertThat(filialen).hasSize(1);
+        assertThat(filialen.get(0).getNaam()).isEqualTo("Charly");
+    }
 }
 
-7.7.5
